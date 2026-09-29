@@ -6,7 +6,7 @@ Sistema web para organizar o atendimento entre pacientes e médicos. Pacientes p
 
 O sistema está disponível em produção em:
 
-[https://teste-agendamento-six.vercel.app/login](https://teste-agendamento-six.vercel.app/login)
+[https://agendamento-consulta-six.vercel.app/](https://agendamento-consulta-six.vercel.app/)
 
 1. Abra o link e entre com seu e-mail e senha.
 2. Caso ainda não possua uma conta, selecione **Cadastre-se**.
