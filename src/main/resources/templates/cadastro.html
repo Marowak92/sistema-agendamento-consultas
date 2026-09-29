@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cadastro - Agendamento de Consultas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<main class="container py-5" style="max-width: 560px;">
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <h1 class="h3 text-center mb-4">Criar cadastro</h1>
+
+            <form th:action="@{/cadastro}" th:object="${cadastro}" method="post">
+                <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger">
+                    <p class="mb-0" th:each="erro : ${#fields.globalErrors()}" th:text="${erro}"></p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="nome">Nome</label>
+                    <input class="form-control" th:field="*{nome}" id="nome" required>
+                    <div class="text-danger small" th:errors="*{nome}"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="email">E-mail</label>
+                    <input class="form-control" th:field="*{email}" id="email" type="email" required>
+                    <div class="text-danger small" th:errors="*{email}"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="senha">Senha</label>
+                    <input class="form-control" th:field="*{senha}" id="senha" type="password" minlength="4" required>
+                    <div class="text-danger small" th:errors="*{senha}"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="tipoUsuario">Perfil</label>
+                    <select class="form-select" th:field="*{tipoUsuario}" id="tipoUsuario" required>
+                        <option value="">Selecione</option>
+                        <option value="PACIENTE">Paciente</option>
+                        <option value="MEDICO">Médico</option>
+                    </select>
+                    <div class="text-danger small" th:errors="*{tipoUsuario}"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="especialidade">Especialidade do médico</label>
+                    <input class="form-control" th:field="*{especialidade}" id="especialidade">
+                    <div class="form-text">Preencha somente se o perfil for médico.</div>
+                </div>
+                <button class="btn btn-primary w-100" type="submit">Cadastrar</button>
+            </form>
+
+            <p class="text-center mt-3 mb-0"><a th:href="@{/login}">Voltar para o login</a></p>
+        </div>
+    </div>
+</main>
+</body>
+</html>

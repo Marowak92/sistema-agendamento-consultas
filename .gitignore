@@ -1,0 +1,23 @@
+target/
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+*.log
+.env
+data/
+
+# Vercel local metadata and cache
+.vercel/
+.vercel-cli-cache/
+
+# Local environment overrides; keep a sanitized example if one is added.
+.env.*
+!.env.example
+
+# Operating-system and JVM crash files
+.DS_Store
+Thumbs.db
+hs_err_pid*

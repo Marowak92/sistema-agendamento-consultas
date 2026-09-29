@@ -1,0 +1,6 @@
+.git
+.vercel
+.vercel-cli-cache
+target
+*.log
+.idea
