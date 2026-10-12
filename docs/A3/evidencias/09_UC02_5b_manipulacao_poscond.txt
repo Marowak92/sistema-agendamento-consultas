@@ -1,0 +1,83 @@
+# Evidencias - UC02-05 (fluxo 5b), UC02-06 (requisicao manipulada), UC02-07, UC02-08
+
+### CT-UC02-05 fluxo 5b: Paciente Teste ja tem consulta com Bruno Melo (id 2) em 13/10 08:00 e tenta marcar 09:00 no mesmo dia
+1a consulta 08:00:
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/medicos
+<div class="alert alert-success">Consulta agendada com sucesso.</div>
+2a consulta 09:00 (mesmo paciente, mesmo medico, mesma data):
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/medicos
+<div class="alert alert-success">Consulta agendada com sucesso.</div>
+Minhas consultas do Paciente Teste:
+ Data Horário Médico Especialidade Ação 
+ 13/10/2026 08:00 Ana Lima Cardiologista [link:/paciente/consultas/1/cancelar]Cancelar 
+ 13/10/2026 08:00 Bruno Melo Dermatologista [link:/paciente/consultas/12/cancelar]Cancelar 
+ 13/10/2026 09:00 Bruno Melo Dermatologista [link:/paciente/consultas/13/cancelar]Cancelar 
+ 13/10/2026 10:00 Ana Lima Cardiologista [link:/paciente/consultas/10/cancelar]Cancelar 
+ 13/10/2026 10:30 Ana Lima Cardiologista [link:/paciente/consultas/11/cancelar]Cancelar 
+
+### CT-UC02-06 requisicoes manipuladas: POST /paciente/consultas com dados fora da grade (token CSRF valido, tirado de /paciente/inicio; Paciente Teste)
+Bruno, 13/10, horario=08:15 -> HTTP/1.1 302 
+ Location: http://localhost:8080/paciente/agenda-medico?medicoId=2&data=2026-10-13
+ 
+Bruno, 13/10, horario=07:00 -> HTTP/1.1 302 
+ Location: http://localhost:8080/paciente/agenda-medico?medicoId=2&data=2026-10-13
+ 
+Bruno, 13/10, horario=12:00 -> HTTP/1.1 302 
+ Location: http://localhost:8080/paciente/agenda-medico?medicoId=2&data=2026-10-13
+ 
+Bruno, 13/10, horario=13:00 -> HTTP/1.1 302 
+ Location: http://localhost:8080/paciente/agenda-medico?medicoId=2&data=2026-10-13
+ 
+Bruno, 20/10 (sem periodo), 08:00 -> HTTP/1.1 302 
+ Location: http://localhost:8080/paciente/agenda-medico?medicoId=2&data=2026-10-20
+ 
+Bruno, 11/10 (data passada), 08:00 -> HTTP/1.1 302 
+ Location: http://localhost:8080/paciente/agenda-medico?medicoId=2&data=2026-10-11
+ 
+medico inexistente (id 999) -> HTTP/1.1 302 
+ Location: http://localhost:8080/paciente/agenda-medico?medicoId=999&data=2026-10-13
+ 
+horario invalido (abc) -> HTTP/1.1 302 
+ Location: http://localhost:8080/paciente/medicos
+ 
+horario ausente -> HTTP/1.1 302 
+ Location: http://localhost:8080/paciente/medicos
+ 
+horario ja ocupado (Bruno 13/10 08:00, ja agendado) -> HTTP/1.1 302 
+ Location: http://localhost:8080/paciente/agenda-medico?medicoId=2&data=2026-10-13
+ 
+--- mensagens exibidas (seguindo o redirect):
+horario=08:15: <div class="alert alert-danger">Este horário não está mais disponível.</div>
+horario=07:00: <div class="alert alert-danger">Este horário não está mais disponível.</div>
+horario=abc: <div class="alert alert-danger">Dados do agendamento inválidos.</div> [HTTP final 200 url http://localhost:8080/paciente/medicos] 
+medico 999: <div class="alert alert-danger">Médico não encontrado.</div> [HTTP final 200 url http://localhost:8080/paciente/medicos] 
+--- GET resumo com horario fora da grade (08:15):
+<h1 class="h3 mb-1">Bruno Melo</h1>
+<div class="alert alert-danger">Este horário não está mais disponível.</div>
+--- Minhas consultas (nenhuma consulta indevida, continuam 5):
+ Data Horário Médico Especialidade Ação 
+ 13/10/2026 08:00 Ana Lima Cardiologista [link:/paciente/consultas/1/cancelar]Cancelar 
+ 13/10/2026 08:00 Bruno Melo Dermatologista [link:/paciente/consultas/12/cancelar]Cancelar 
+ 13/10/2026 09:00 Bruno Melo Dermatologista [link:/paciente/consultas/13/cancelar]Cancelar 
+ 13/10/2026 10:00 Ana Lima Cardiologista [link:/paciente/consultas/10/cancelar]Cancelar 
+ 13/10/2026 10:30 Ana Lima Cardiologista [link:/paciente/consultas/11/cancelar]Cancelar 
+
+### CT-UC02-07 pos-condicao: horario some da lista de livres e aparece Agendada no painel
+Livres de Ana em 13/10 (08:00, 10:00 e 10:30 foram agendados por Paciente Teste):
+08:30 09:00 09:30 11:00 11:30 [botoes de horario: 1]
+Painel de Ana em 13/10:
+#Data 13/10/2026 
+#Consultas 3 
+#Horas previstas 1h30 
+#Valor previsto R$ 450,00 Agenda 
+ linha: Horário Situação 
+ linha: 08:00 Paciente Teste - Agendada 
+ linha: 08:30 Livre 
+ linha: 09:00 Livre 
+ linha: 09:30 Livre 
+ linha: 10:00 Paciente Teste - Agendada 
+ linha: 10:30 Paciente Teste - Agendada 
+ linha: 11:00 Livre 
+ linha: 11:30 Livre 

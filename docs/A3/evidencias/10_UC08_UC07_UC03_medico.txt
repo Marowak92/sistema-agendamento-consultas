@@ -1,0 +1,117 @@
+# Evidencias - UC08 e UC07 (painel preenchido) e UC03 cancelamento pelo medico. Medico Bruno Melo (id 2), data 13/10/2026
+
+### CT-UC08-01 duas consultas de 30 min a R$ 150,00 (Paciente Teste, 08:00 e 09:00)
+#Data 13/10/2026 
+#Consultas 2 
+#Horas previstas 1h00 
+#Valor previsto R$ 300,00 Agenda 
+ linha: Horário Situação 
+ linha: 08:00 Paciente Teste - Agendada 
+ linha: 08:30 Livre 
+ linha: 09:00 Paciente Teste - Agendada 
+ linha: 09:30 Livre 
+ linha: 10:00 Livre 
+ linha: 10:30 Livre 
+ linha: 11:00 Livre 
+ linha: 11:30 Livre 
+--- Consultas do medico:
+ Data Horário Paciente Valor Ação 
+ 13/10/2026 08:00 Paciente Teste R$ 150,00 [link:/medico/consultas/12/cancelar]Cancelar 
+ 13/10/2026 09:00 Paciente Teste R$ 150,00 [link:/medico/consultas/13/cancelar]Cancelar 
+
+### CT-UC07-02 (preparo) Maria Souza agenda Bruno 10:30 e painel passa a ter 3 consultas
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/medicos
+<div class="alert alert-success">Consulta agendada com sucesso.</div>
+#Data 13/10/2026 
+#Consultas 3 
+#Horas previstas 1h30 
+#Valor previsto R$ 450,00 Agenda 
+ linha: Horário Situação 
+ linha: 08:00 Paciente Teste - Agendada 
+ linha: 08:30 Livre 
+ linha: 09:00 Paciente Teste - Agendada 
+ linha: 09:30 Livre 
+ linha: 10:00 Livre 
+ linha: 10:30 Maria Souza - Agendada 
+ linha: 11:00 Livre 
+ linha: 11:30 Livre 
+
+### CT-UC07-08b tela Consultas (GET /medico/consultas) de Bruno
+<h1 class="h3 mb-0">Consultas da minha agenda</h1>
+<thead><tr><th>Data</th><th>Horário</th><th>Paciente</th><th>Valor</th><th>Ação</th></tr></thead>
+ Data Horário Paciente Valor Ação 
+ 13/10/2026 08:00 Paciente Teste R$ 150,00 [link:/medico/consultas/12/cancelar]Cancelar 
+ 13/10/2026 09:00 Paciente Teste R$ 150,00 [link:/medico/consultas/13/cancelar]Cancelar 
+ 13/10/2026 10:30 Maria Souza R$ 150,00 [link:/medico/consultas/14/cancelar]Cancelar 
+
+### CT-UC03-04 medico desiste: abre a confirmacao da consulta 12 (Paciente Teste, 08:00) e usa Nao, voltar
+ Cancelar consulta 
+ Deseja realmente cancelar esta consulta? 
+ Paciente Paciente Teste 
+ Médico Bruno Melo 
+ Data 13/10/2026 
+ Horário 08:00 
+ Sim, cancelar consulta 
+[link:/medico/consultas] Não, voltar 
+GET do link Nao, voltar (/medico/consultas):
+ Data Horário Paciente Valor Ação 
+ 13/10/2026 08:00 Paciente Teste R$ 150,00 [link:/medico/consultas/12/cancelar]Cancelar 
+ 13/10/2026 09:00 Paciente Teste R$ 150,00 [link:/medico/consultas/13/cancelar]Cancelar 
+ 13/10/2026 10:30 Maria Souza R$ 150,00 [link:/medico/consultas/14/cancelar]Cancelar 
+
+### CT-UC03-03 medico cancela a consulta 13 (Paciente Teste, 09:00)
+POST /medico/consultas/13/cancelar:
+HTTP/1.1 302 
+Location: http://localhost:8080/medico/consultas
+mensagem:
+<div class="alert alert-success">Consulta cancelada com sucesso.</div>
+lista do medico apos cancelar:
+ Data Horário Paciente Valor Ação 
+ 13/10/2026 08:00 Paciente Teste R$ 150,00 [link:/medico/consultas/12/cancelar]Cancelar 
+ 13/10/2026 10:30 Maria Souza R$ 150,00 [link:/medico/consultas/14/cancelar]Cancelar 
+lista do paciente apos cancelar (consulta 13 nao deve aparecer):
+ Data Horário Médico Especialidade Ação 
+ 13/10/2026 08:00 Ana Lima Cardiologista [link:/paciente/consultas/1/cancelar]Cancelar 
+ 13/10/2026 08:00 Bruno Melo Dermatologista [link:/paciente/consultas/12/cancelar]Cancelar 
+ 13/10/2026 10:00 Ana Lima Cardiologista [link:/paciente/consultas/10/cancelar]Cancelar 
+ 13/10/2026 10:30 Ana Lima Cardiologista [link:/paciente/consultas/11/cancelar]Cancelar 
+horarios livres de Bruno em 13/10 (09:00 deve voltar):
+08:30 09:00 09:30 10:00 11:00 11:30 [botoes de horario: 1]
+status no banco:
+SELECT id, horario, status, chave_reserva FROM consultas WHERE medico_id=2 ORDER BY id; ID HORARIO STATUS CHAVE_RESERVA 12 08:00:00 AGENDADA ATIVA 13 09:00:00 CANCELADA null 14 10:30:00 AGENDADA ATIVA (3 rows, 0 ms) 
+
+### CT-UC08-02 painel apos o cancelamento (totais recalculados)
+#Data 13/10/2026 
+#Consultas 2 
+#Horas previstas 1h00 
+#Valor previsto R$ 300,00 Agenda 
+ linha: Horário Situação 
+ linha: 08:00 Paciente Teste - Agendada 
+ linha: 08:30 Livre 
+ linha: 09:00 Livre 
+ linha: 09:30 Livre 
+ linha: 10:00 Livre 
+ linha: 10:30 Maria Souza - Agendada 
+ linha: 11:00 Livre 
+ linha: 11:30 Livre 
+
+### CT-UC07-07 consulta cancelada nao aparece: linha 09:00 do painel acima e Livre; /medico/consultas acima nao lista 09:00
+
+### CT-UC03-10 regressao: Maria Souza agenda o horario liberado (Bruno 09:00)
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/medicos
+<div class="alert alert-success">Consulta agendada com sucesso.</div>
+#Data 13/10/2026 
+#Consultas 3 
+#Horas previstas 1h30 
+#Valor previsto R$ 450,00 Agenda 
+ linha: Horário Situação 
+ linha: 08:00 Paciente Teste - Agendada 
+ linha: 08:30 Livre 
+ linha: 09:00 Maria Souza - Agendada 
+ linha: 09:30 Livre 
+ linha: 10:00 Livre 
+ linha: 10:30 Maria Souza - Agendada 
+ linha: 11:00 Livre 
+ linha: 11:30 Livre 

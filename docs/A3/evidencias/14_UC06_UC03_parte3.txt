@@ -1,0 +1,68 @@
+# Evidencias - UC06 (parte 3): outro medico, alterar, data passada, prazo de cancelamento (UC03-05), alteracao de duracao (UC06-11)
+
+### CT-UC06-12 medico remove periodo de OUTRO medico: Paulo tenta remover o periodo de Ana Lima
+periodos de Ana em 13/10 (visao de Ana):
+ 08:00 12:00 [id:1] Remover 
+id do periodo de Ana: 1
+POST /medico/agenda/excluir id=1 (como Paulo):
+Você não pode alterar a agenda de outro médico.|[HTTP final 200 url http://localhost:8080/medico/agenda?data=2026-10-13]|
+periodos de Ana depois (devem continuar):
+ 08:00 12:00 Remover 
+periodo inexistente id 9999:
+Horário de atendimento não encontrado.|[HTTP final 200 url http://localhost:8080/medico/agenda?data=2026-10-13]|
+Painel de Ana em 13/10 ainda com a grade completa:
+#Data 13/10/2026 
+#Consultas 2 
+#Horas previstas 1h00 
+#Valor previsto R$ 300,00 Agenda 
+
+### CT-UC06-10 alterar periodo existente: a tela so tem Remover; tentativas de rota de edicao
+botoes da linha de periodo (HTML de /medico/agenda?data=2026-10-14):
+<button class="btn btn-sm btn-outline-danger" type="submit">Remover</button>
+GET /medico/agenda/4/editar -> 404
+GET /medico/agenda/editar -> 404
+GET /medico/agenda/alterar -> 404
+POST /medico/agenda/alterar -> 404
+
+### CT-UC06-13 exploratorio: periodo em data passada (01/10/2026) e hoje em horario ja passado (12/10 06:00-06:30)
+Horário de atendimento adicionado com sucesso.||[HTTP final 200 url http://localhost:8080/medico/agenda?data=2026-10-01]|
+ 08:00 09:00 [id:12] Remover 
+Horário de atendimento adicionado com sucesso.||[HTTP final 200 url http://localhost:8080/medico/agenda?data=2026-10-12]|
+ 06:00 06:30 [id:13] Remover 
+o paciente enxerga horarios livres hoje (12/10), agora = 10:47?
+06:00 [botoes de horario: 1]
+o paciente enxerga 01/10 (data passada)?
+Não há horários livres para esta data.
+[botoes de horario: 0]
+Maria tenta agendar 06:00 de hoje (hora ja passada):
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/medicos
+<div class="alert alert-success">Consulta agendada com sucesso.</div>
+
+### CT-UC03-05 fluxo 2a prazo minimo para cancelamento: consulta de hoje a poucas horas: periodo 12/10 11:12-11:42
+agora: 10:47:47
+Horário de atendimento adicionado com sucesso.||[HTTP final 200 url http://localhost:8080/medico/agenda?data=2026-10-12]|
+11:12 [botoes de horario: 1]
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/medicos
+<div class="alert alert-success">Consulta agendada com sucesso.</div>
+ 12/10/2026 06:00 Dr. Paulo Novo Ortopedista [link:/paciente/consultas/21/cancelar]Cancelar 
+ 12/10/2026 11:12 Dr. Paulo Novo Ortopedista [link:/paciente/consultas/22/cancelar]Cancelar 
+consulta id 21 (06:00, horario que ja passou): paciente cancela:
+<h1 class="h3">Cancelar consulta</h1>
+<button class="btn btn-danger" type="submit">Sim, cancelar consulta</button>
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/minhas-consultas
+<div class="alert alert-success">Consulta cancelada com sucesso.</div>
+agora: 10:47:47
+
+### CT-UC03-05 (continuacao) cancelamento da consulta 22 (hoje 11:12, inicio a cerca de 20 minutos)
+agora: 10:51:31
+<h1 class="h3">Cancelar consulta</h1>
+<button class="btn btn-danger" type="submit">Sim, cancelar consulta</button>
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/minhas-consultas
+<div class="alert alert-success">Consulta cancelada com sucesso.</div>
+(nenhuma consulta de 12/10 restante)
+
+### CT-UC06-13 (continuacao) periodos de hoje de Paulo restantes: removendo 12/10 para nao interferir (ids 13 e o de 11:12)

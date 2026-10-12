@@ -1,0 +1,68 @@
+# Evidencias - UC06 Manter agenda (parte 1) e UC01-06/07. Medico: Dr. Paulo Novo (paulo.novo@teste.com, id 4), nova agenda
+
+### GET /medico/agenda (primeira visita): formulario pre-preenchido
+<h1 class="h3 mb-1">Minha agenda</h1>
+<form action="/logout" method="post"><input type="hidden" name="_csrf" value="mqhu_IK25mL206rD1ZMxo9deFnhniBSsR2ZH4XE-PqkloHoF-59byLSB01Tb4ZKh574FkbI_OxlWsS2BJgci2EcGWs8SxR8z"/><button class="btn btn-outline-secondary">Sair</button></form>
+<h2 class="h5 mb-3">Adicionar período</h2>
+<input class="form-control" id="data" type="date" required name="data" value="2026-10-12">
+<input class="form-control" id="horaInicio" type="time" required name="horaInicio" value="">
+<input class="form-control" id="horaFim" type="time" required name="horaFim" value="">
+<input class="form-control" id="duracaoConsulta" type="number" min="1" required name="duracaoConsulta" value="30">
+<input class="form-control" id="valorConsulta" type="number" min="0" step="0.01" required name="valorConsulta" value="0">
+<button class="btn btn-primary mt-3" type="submit">Adicionar horário</button>
+<input class="form-control" id="filtroData" name="data" type="date" value="2026-10-12" required>
+<div class="col-sm-2"><button class="btn btn-outline-primary" type="submit">Filtrar</button></div>
+<h2 class="h5">Períodos em <span>12/10/2026</span></h2>
+
+### CT-UC06-01 adicionar periodo valido: 14/10/2026 08:00-09:15, 30 min, R$ 200,00
+Horário de atendimento adicionado com sucesso.||[HTTP final 200 url http://localhost:8080/medico/agenda?data=2026-10-14]|
+periodos de 14/10 (filtro Visualizar data):
+ 08:00 09:15 [id:4] Remover 
+
+### CT-UC01-07 borda: periodo 08:00-09:15 com consultas de 30 min -> apenas 08:00 e 08:30 (visao do paciente Maria Souza)
+08:00 08:30 [botoes de horario: 1]
+
+### CT-UC01-06 horario agendado nao aparece como livre: Paciente Teste agenda Paulo 14/10 08:30
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/medicos
+<div class="alert alert-success">Consulta agendada com sucesso.</div>
+livres de Paulo em 14/10 apos o agendamento:
+08:00 [botoes de horario: 1]
+
+### CT-UC06-02 hora final menor/igual a inicial: 15/10 10:00-09:00 e 10:00-10:00
+|A hora final deve ser maior que a hora inicial.||[HTTP final 200 url http://localhost:8080/medico/agenda]|
+|A hora final deve ser maior que a hora inicial.||[HTTP final 200 url http://localhost:8080/medico/agenda]|
+
+### CT-UC06-03 fluxo 3a periodo sobreposto: 14/10 08:30-09:30 (sobrepoe 08:00-09:15); e 14/10 07:00-08:01 (sobrepoe 1 minuto); e 14/10 08:00-09:15 igual; e contido 08:15-08:45
+|Esse período entra em conflito com outro horário de atendimento.||[HTTP final 200 url http://localhost:8080/medico/agenda]|
+|Esse período entra em conflito com outro horário de atendimento.||[HTTP final 200 url http://localhost:8080/medico/agenda]|
+|Esse período entra em conflito com outro horário de atendimento.||[HTTP final 200 url http://localhost:8080/medico/agenda]|
+|Esse período entra em conflito com outro horário de atendimento.||[HTTP final 200 url http://localhost:8080/medico/agenda]|
+periodos de 14/10 (continua apenas o original):
+ 08:00 09:15 [id:4] Remover 
+
+### CT-UC06-04 borda periodos encostados: 16/10 08:00-10:00 e depois 10:00-12:00
+Horário de atendimento adicionado com sucesso.||[HTTP final 200 url http://localhost:8080/medico/agenda?data=2026-10-16]|
+Horário de atendimento adicionado com sucesso.||[HTTP final 200 url http://localhost:8080/medico/agenda?data=2026-10-16]|
+periodos de 16/10:
+ 08:00 10:00 [id:5] Remover 
+ 10:00 12:00 [id:6] Remover 
+livres (Maria) em 16/10:
+08:00 08:30 09:00 09:30 10:00 10:30 11:00 11:30 [botoes de horario: 1]
+
+### CT-UC06-05 duracao 0 e -10 (enviando direto ao servidor; o navegador bloquearia com min=1)
+A duração deve ser maior que zero.||[HTTP final 200 url http://localhost:8080/medico/agenda]|
+A duração deve ser maior que zero.||[HTTP final 200 url http://localhost:8080/medico/agenda]|
+(duracao vazia)
+Informe a duração da consulta.||[HTTP final 200 url http://localhost:8080/medico/agenda]|
+
+### CT-UC06-06 valor negativo -1
+O valor não pode ser negativo.||[HTTP final 200 url http://localhost:8080/medico/agenda]|
+(valor vazio)
+Informe o valor da consulta.||[HTTP final 200 url http://localhost:8080/medico/agenda]|
+periodos de 17/10 (nenhum foi gravado):
+ Nenhum período cadastrado nesta data. 
+(hora inicial vazia)
+Informe a hora inicial.||[HTTP final 200 url http://localhost:8080/medico/agenda]|
+(data vazia)
+Informe a data de atendimento.||[HTTP final 200 url http://localhost:8080/medico/agenda]|

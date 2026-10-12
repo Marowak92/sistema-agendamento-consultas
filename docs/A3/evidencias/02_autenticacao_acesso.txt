@@ -1,0 +1,71 @@
+# Evidencias - Acesso (CT-AUT-07 a CT-AUT-11)
+# Nota: esta evidencia foi coletada sem os cabecalhos de navegador (Accept-Language pt-BR; Accept text/html); o CT-AUT-11 foi reexecutado com eles (evidencia 18).
+
+### CT-AUT-07 login paciente e medico
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/inicio
+<title>Área do Paciente</title>
+<h1 class="h3 mb-0">Área do Paciente</h1>
+<a class="btn btn-primary" href="/paciente/medicos">Agendar consulta</a>
+<a class="btn btn-outline-primary" href="/paciente/minhas-consultas">Minhas consultas</a>
+HTTP/1.1 302 
+Location: http://localhost:8080/medico/painel
+<title>Painel do Médico</title>
+<h1 class="h3 mb-0">Painel do dia</h1>
+
+### CT-AUT-08 senha errada / e-mail inexistente
+HTTP/1.1 302 
+Location: http://localhost:8080/login?error
+<div class="alert alert-danger">E-mail ou senha inválidos.</div>
+HTTP/1.1 302 
+Location: http://localhost:8080/login?error
+
+### CT-AUT-09 sair (POST /logout)
+HTTP/1.1 302 
+Location: http://localhost:8080/login?logout
+<div class="alert alert-success">Você saiu do sistema.</div>
+--- apos sair, acessar /paciente/inicio:
+HTTP/1.1 302 
+Location: http://localhost:8080/login
+
+### CT-AUT-10 area restrita sem login (sem cookie)
+GET /paciente/inicio
+HTTP/1.1 302 
+Location: http://localhost:8080/login
+GET /paciente/medicos
+HTTP/1.1 302 
+Location: http://localhost:8080/login
+GET /paciente/minhas-consultas
+HTTP/1.1 302 
+Location: http://localhost:8080/login
+GET /medico/painel
+HTTP/1.1 302 
+Location: http://localhost:8080/login
+GET /medico/agenda
+HTTP/1.1 302 
+Location: http://localhost:8080/login
+GET /medico/consultas
+HTTP/1.1 302 
+Location: http://localhost:8080/login
+POST /paciente/consultas sem login (sem CSRF):
+HTTP/1.1 302 
+Location: http://localhost:8080/login
+
+### CT-AUT-11 perfil trocado
+paciente GET /medico/painel
+HTTP/1.1 403 
+paciente GET /medico/agenda
+HTTP/1.1 403 
+paciente GET /medico/consultas
+HTTP/1.1 403 
+medico GET /paciente/inicio
+HTTP/1.1 403 
+medico GET /paciente/medicos
+HTTP/1.1 403 
+medico GET /paciente/minhas-consultas
+HTTP/1.1 403 
+--- corpo da resposta de acesso negado:
+{"timestamp":"2026-10-12T13:42:26.379+00:00","status":403,"error":"Forbidden","path":"/medico/painel"}
+
+### CT-AUT-11b POST sem token CSRF (paciente logado)
+HTTP/1.1 403 

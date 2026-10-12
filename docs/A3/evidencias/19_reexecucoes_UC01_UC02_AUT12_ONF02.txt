@@ -1,0 +1,40 @@
+# Evidencias 19 - reexecucoes: UC01-03 (data passada com periodo), UC02-03 (outra data com horarios), UC02-06 (horario ausente), AUT-12 (medicos), ONF-02. 12/10/2026 11:17
+### CT-UC01-03 data passada COM periodo: Dr. Paulo Novo tem periodo em 01/10/2026 (cadastrado no CT-UC06-13)
+periodos do medico em 01/10/2026:
+ 08:00 09:00 [id:12] Remover 
+visao do paciente em 01/10/2026:
+Não há horários livres para esta data.
+[botoes de horario: 0]
+### CT-UC02-03 Carlos Reis: 13/10 lotado; Carlos cadastra periodo em 15/10 (08:00-09:00, 30 min, R$ 150) e o paciente escolhe essa data
+13/10:
+Não há horários livres para esta data.
+[botoes de horario: 0]
+Horário de atendimento adicionado com sucesso.
+15/10 (campo de data trocado manualmente):
+08:00 08:30 [botoes de horario: 1]
+### CT-UC02-06 horario ausente (POST sem o campo horario), Paciente Teste
+resposta sem seguir redirect:
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/medicos
+### CT-UC02-06 horario ausente (continuacao): POST sem horario e leitura da mensagem
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/medicos
+Dados do agendamento inválidos.
+### CT-AUT-12 (continuacao): busca em medicos e lista das contas
+SQL> SELECT COUNT(*) AS texto_puro_medicos FROM medicos WHERE senha IN ('1234','abcd')
+ H2 Console 
+SELECT COUNT(*) AS texto_puro_medicos FROM medicos WHERE senha IN (&#39;1234&#39;,&#39;abcd&#39;); TEXTO_PURO_MEDICOS 0 (1 row, 1 ms) 
+SQL> SELECT COUNT(*) AS texto_puro_pacientes FROM pacientes WHERE senha IN ('1234','abcd')
+ H2 Console 
+SELECT COUNT(*) AS texto_puro_pacientes FROM pacientes WHERE senha IN (&#39;1234&#39;,&#39;abcd&#39;); TEXTO_PURO_PACIENTES 0 (1 row, 0 ms) 
+SQL> SELECT COUNT(*) AS bcrypt_fora_do_padrao FROM (SELECT senha FROM pacientes UNION ALL SELECT senha FROM medicos) WHERE senha NOT LIKE '$2a$10$%'
+ H2 Console 
+SELECT COUNT(*) AS bcrypt_fora_do_padrao FROM (SELECT senha FROM pacientes UNION ALL SELECT senha FROM medicos) WHERE senha NOT LIKE &#39;&#36;2a&#36;10&#36;%&#39;; BCRYPT_FORA_DO_PADRAO 0 (1 row, 14 ms) 
+SQL> SELECT email FROM pacientes
+ H2 Console 
+SELECT email FROM pacientes; EMAIL MARIA.SOUZA@TESTE.COM maria.dois@teste.com maria.souza@teste.com paciente@teste.com (4 rows, 0 ms) 
+### CT-ONF-02 retomada: agenda com periodo (Bruno 13/10 e Carlos 15/10), 10 medicoes cada, segundos
+medico 2 data 2026-10-13:
+0.026671 0.011210 0.010542 0.007628 0.007818 0.008042 0.007134 0.007321 0.007007 0.006927 
+medico 3 data 2026-10-15:
+0.006262 0.005524 0.005138 0.005394 0.012737 0.005609 0.006147 0.004966 0.005353 0.004978 

@@ -1,0 +1,27 @@
+# Evidencias - UC02 (continuacao)
+
+### CT-UC02-02 Voltar no resumo nao agenda: Paciente Teste abre resumo de Ana 08:30 e usa Voltar (GET do link)
+href="/paciente/agenda-medico?medicoId=1&amp;data=2026-10-13"
+GET do link do Voltar:
+08:30 09:00 09:30 10:00 10:30 11:00 11:30 [botoes de horario: 1]
+Minhas consultas (so a de 08:00 da etapa anterior):
+ Data Horário Médico Especialidade Ação 
+ 13/10/2026 08:00 Ana Lima Cardiologista [link:/paciente/consultas/1/cancelar]Cancelar 
+
+### CT-UC02-03 fluxo 2a: Carlos Reis (id 3) com todos os 8 horarios de 13/10 ocupados (Maria Souza agenda 08:00..11:30)
+08:00 -> HTTP/1.1 302  Location: http://localhost:8080/paciente/medicos 
+08:30 -> HTTP/1.1 302  Location: http://localhost:8080/paciente/medicos 
+09:00 -> HTTP/1.1 302  Location: http://localhost:8080/paciente/medicos 
+09:30 -> HTTP/1.1 302  Location: http://localhost:8080/paciente/medicos 
+10:00 -> HTTP/1.1 302  Location: http://localhost:8080/paciente/medicos 
+10:30 -> HTTP/1.1 302  Location: http://localhost:8080/paciente/medicos 
+11:00 -> HTTP/1.1 302  Location: http://localhost:8080/paciente/medicos 
+11:30 -> HTTP/1.1 302  Location: http://localhost:8080/paciente/medicos 
+agenda de Carlos em 13/10:
+Não há horários livres para esta data.
+[botoes de horario: 0]
+Campo para escolher outra data:
+<input class="form-control" id="data" name="data" type="date" value="2026-10-13" required>
+agenda de Carlos em 14/10 (outra data) - botao Ver horarios:
+Não há horários livres para esta data.
+[botoes de horario: 0]

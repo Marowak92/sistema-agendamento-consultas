@@ -1,0 +1,35 @@
+# Evidencias - funcionalidades ausentes (UC02-08, UC03-09, UC04, UC05). Verificacao no codigo da tag v1 e nas rotas do sistema. 12/10/2026
+## Busca por termos de lembrete, notificacao, calendario, e-mail, agendador no codigo e nos templates:
+(nenhuma ocorrencia)
+## Rotas mapeadas (anotacoes Mapping):
+@GetMapping
+@GetMapping("/")
+@GetMapping("/{id}/cancelar")
+@GetMapping("/agenda-medico")
+@GetMapping("/cadastro")
+@GetMapping("/consultas/{id}/cancelar")
+@GetMapping("/login")
+@GetMapping("/medicos")
+@GetMapping("/minhas-consultas")
+@GetMapping("/paciente/inicio")
+@GetMapping("/resumo-consulta")
+@PostMapping
+@PostMapping("/{id}/cancelar")
+@PostMapping("/cadastro")
+@PostMapping("/consultas")
+@PostMapping("/consultas/{id}/cancelar")
+@PostMapping("/excluir")
+@RequestMapping("/medico/agenda")
+@RequestMapping("/medico/consultas")
+@RequestMapping("/medico/painel")
+@RequestMapping("/paciente")
+## Dependencias no pom.xml (mail / agendamento de tarefas):
+(nenhuma)
+GET /paciente/consultas/1/calendario (Paciente Teste)
+HTTP/1.1 404 
+GET /paciente/consultas/1/ics (Paciente Teste)
+HTTP/1.1 404 
+GET /paciente/consultas/1.ics (Paciente Teste)
+HTTP/1.1 404 
+GET /paciente/lembretes (Paciente Teste)
+HTTP/1.1 404 

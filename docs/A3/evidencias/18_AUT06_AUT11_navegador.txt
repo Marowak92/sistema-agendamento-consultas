@@ -1,0 +1,63 @@
+# Evidencias 18 - reexecucao de CT-AUT-06 e CT-AUT-11 com cabecalhos de navegador (Accept-Language pt-BR; Accept text/html). 12/10/2026 11:16
+### CT-AUT-06 e-mail sem @ (campo type=email no formulario; enviado direto ao servidor)
+
+E-mail
+
+deve ser um endereço de e-mail bem formado
+[HTTP final 200 url http://localhost:8080/cadastro]
+--- campo no HTML:
+                    <input class="form-control" id="email" type="email" required name="email" value="">
+### CT-AUT-11 paciente em /medico/painel, Accept: text/html
+GET /medico/painel
+HTTP/1.1 403 
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Type: text/html;charset=UTF-8
+Content-Language: pt-BR
+Content-Length: 275
+Date: Mon, 12 Oct 2026 14:17:00 GMT
+
+ Whitelabel Error Page This application has no explicit mapping for /error, so you are seeing this as a fallback. Mon Oct 12 11:17:00 BRT 2026 There was an unexpected error (type=Forbidden, status=403). GET /medico/agenda
+HTTP/1.1 403 
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Type: text/html;charset=UTF-8
+Content-Language: pt-BR
+Content-Length: 275
+Date: Mon, 12 Oct 2026 14:17:00 GMT
+
+ Whitelabel Error Page This application has no explicit mapping for /error, so you are seeing this as a fallback. Mon Oct 12 11:17:00 BRT 2026 There was an unexpected error (type=Forbidden, status=403). GET /medico/consultas
+HTTP/1.1 403 
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Type: text/html;charset=UTF-8
+Content-Language: pt-BR
+Content-Length: 275
+Date: Mon, 12 Oct 2026 14:17:00 GMT
+
+ Whitelabel Error Page This application has no explicit mapping for /error, so you are seeing this as a fallback. Mon Oct 12 11:17:00 BRT 2026 There was an unexpected error (type=Forbidden, status=403). ### medico em /paciente/inicio, Accept: text/html
+HTTP/1.1 403 
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Type: text/html;charset=UTF-8
+Content-Language: pt-BR
+Content-Length: 275
+Date: Mon, 12 Oct 2026 14:17:00 GMT
+
+ Whitelabel Error Page This application has no explicit mapping for /error, so you are seeing this as a fallback. Mon Oct 12 11:17:00 BRT 2026 There was an unexpected error (type=Forbidden, status=403). 
