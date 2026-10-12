@@ -1,0 +1,11 @@
+# CT-AUT-12 senha cifrada. Console H2 acessado de dentro do container (o console recusa conexoes remotas: 'webAllowOthers' disabled), script h2q.sh (login.do + query.do em http://localhost:8080/h2-console).
+# Observacao: '&#36;' na saida e o caractere $ escapado em HTML.
+
+SQL> SELECT email, senha FROM pacientes
+SELECT email, senha FROM pacientes; EMAIL SENHA paciente@teste.com &#36;2a&#36;10&#36;dXeZdTN/L6cffsLclmMUheMvKGLwfxuXphEoggA6o6frQJLJLFhZq maria.souza@teste.com &#36;2a&#36;10&#36;q8HB2dF6Fa61gcoiWuQ/g.ciwjj85JiUr467iXo1Rkhu0EoyoMhIi maria.dois@teste.com &#36;2a&#36;10&#36;9jV73m6.1dUZVxnBWPhiaO0Vo7BeRACgFA2AVSfbAEjRgOjpx9beu MARIA.SOUZA@TESTE.COM &#36;2a&#36;10&#36;bOzP3dGv/xn6uPt21zBliORaVwR3bRkkueuS4e8I3tGRjdQP.JU1C (4 rows, 1 ms) 
+
+SQL> SELECT email, senha FROM medicos
+SELECT email, senha FROM medicos; EMAIL SENHA ana.lima@teste.com &#36;2a&#36;10&#36;jNvhh0gpGsoNFR4ny4hH8ui1VZba7g1P5e/TBSgknXL6/Bj8O4Vlm bruno.melo@teste.com &#36;2a&#36;10&#36;3x4fTn6DdrKe.3bUMQfkjeNRdgxunYU4J9Ftd6j9qu9VPfZFMkKUW carlos.reis@teste.com &#36;2a&#36;10&#36;aBnvKbxcQgWfchrWmaZ4d.nE2bB/AOsB32MREYaP8GV4QI7Apv72y paulo.novo@teste.com &#36;2a&#36;10&#36;kPfn3Hyf7IW12528hgiQEuRYWAw3EH4QqJ/1Z55EV5N4hpSJ5aYA. (4 rows, 1 ms) 
+
+# Senha em texto puro '1234' aparece no banco?
+SELECT COUNT(*) AS texto_puro FROM pacientes WHERE senha IN (&#39;1234&#39;,&#39;abcd&#39;); TEXTO_PURO 0 (1 row, 7 ms) 

@@ -1,0 +1,73 @@
+# Evidencias - UC03 cancelamento pelo paciente e protecoes de acesso. Ids: pac = Paciente Teste (consultas 1, 10, 11, 12); Maria Souza (2-9 Carlos, 14 e 15 Bruno)
+
+### CT-UC03-01 paciente cancela com confirmacao: consulta 11 (Ana Lima 13/10 10:30)
+GET /paciente/consultas/11/cancelar (tela de confirmacao):
+ Cancelar consulta 
+ Deseja realmente cancelar esta consulta? 
+ Paciente Paciente Teste 
+ Médico Ana Lima 
+ Data 13/10/2026 
+ Horário 10:30 
+ Sim, cancelar consulta 
+[link:/paciente/minhas-consultas] Não, voltar 
+POST /paciente/consultas/11/cancelar:
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/minhas-consultas
+mensagem:
+<div class="alert alert-success">Consulta cancelada com sucesso.</div>
+Minhas consultas:
+ Data Horário Médico Especialidade Ação 
+ 13/10/2026 08:00 Ana Lima Cardiologista [link:/paciente/consultas/1/cancelar]Cancelar 
+ 13/10/2026 08:00 Bruno Melo Dermatologista [link:/paciente/consultas/12/cancelar]Cancelar 
+ 13/10/2026 10:00 Ana Lima Cardiologista [link:/paciente/consultas/10/cancelar]Cancelar 
+horarios livres de Ana em 13/10 (10:30 deve voltar):
+08:30 09:00 09:30 10:30 11:00 11:30 [botoes de horario: 1]
+
+### CT-UC03-02 paciente desiste: consulta 10 (Ana 10:00): abre a confirmacao e segue o link Nao, voltar
+ Sim, cancelar consulta 
+[link:/paciente/minhas-consultas] Não, voltar 
+GET /paciente/minhas-consultas (link Nao, voltar):
+ Data Horário Médico Especialidade Ação 
+ 13/10/2026 08:00 Ana Lima Cardiologista [link:/paciente/consultas/1/cancelar]Cancelar 
+ 13/10/2026 08:00 Bruno Melo Dermatologista [link:/paciente/consultas/12/cancelar]Cancelar 
+ 13/10/2026 10:00 Ana Lima Cardiologista [link:/paciente/consultas/10/cancelar]Cancelar 
+
+### CT-UC03-06 paciente tenta cancelar a consulta de OUTRO paciente (consulta 14, de Maria Souza)
+GET /paciente/consultas/14/cancelar:
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/minhas-consultas
+mensagem:
+<h1 class="h3 mb-0">Minhas consultas agendadas</h1>
+<div class="alert alert-danger">Você só pode cancelar suas próprias consultas.</div>
+POST /paciente/consultas/14/cancelar:
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/minhas-consultas
+<div class="alert alert-danger">Você só pode cancelar suas próprias consultas.</div>
+A consulta 14 continua agendada (lista de Maria):
+ 13/10/2026 09:00 Bruno Melo Dermatologista [link:/paciente/consultas/15/cancelar]Cancelar 
+ 13/10/2026 10:30 Bruno Melo Dermatologista [link:/paciente/consultas/14/cancelar]Cancelar 
+Medico tentando a rota do paciente (POST /paciente/consultas/14/cancelar como Bruno):
+HTTP/1.1 403 
+
+### CT-UC03-07 medico tenta cancelar consulta de OUTRO medico (Bruno x consulta 1 de Ana Lima)
+GET /medico/consultas/1/cancelar:
+HTTP/1.1 302 
+Location: http://localhost:8080/medico/consultas
+<div class="alert alert-danger">Você só pode cancelar consultas da sua agenda.</div>
+POST /medico/consultas/1/cancelar:
+HTTP/1.1 302 
+Location: http://localhost:8080/medico/consultas
+<div class="alert alert-danger">Você só pode cancelar consultas da sua agenda.</div>
+A consulta 1 continua agendada (lista de Ana):
+ 13/10/2026 08:00 Paciente Teste R$ 150,00 [link:/medico/consultas/1/cancelar]Cancelar 
+
+### CT-UC03-08 cancelar consulta ja cancelada (consulta 11)
+POST /paciente/consultas/11/cancelar de novo:
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/minhas-consultas
+<div class="alert alert-danger">Esta consulta não está mais agendada.</div>
+GET /paciente/consultas/11/cancelar:
+<h1 class="h3 mb-0">Minhas consultas agendadas</h1>
+<div class="alert alert-danger">Esta consulta não está mais agendada.</div>
+consulta inexistente 9999:
+<div class="alert alert-danger">Consulta não encontrada.</div>

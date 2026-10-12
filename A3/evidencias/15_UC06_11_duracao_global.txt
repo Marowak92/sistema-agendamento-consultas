@@ -1,0 +1,42 @@
+# Evidencias - CT-UC06-11: duracao/valor sao da agenda inteira. Dr. Paulo Novo (id 4, senha abcd). Executado em 12/10/2026 10:58
+HTTP/1.1 302 
+Location: http://localhost:8080/medico/painel
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/inicio
+### 1) periodo 25/10 08:00-09:00, 30 min, R$ 200
+Horário de atendimento adicionado com sucesso.||[HTTP final 200 url http://localhost:8080/medico/agenda?data=2026-10-25]|
+visao do paciente:
+08:00 08:30 [botoes de horario: 1]
+Maria agenda 08:30:
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/medicos
+painel de Paulo em 25/10 (antes):
+#Data 25/10/2026 
+#Consultas 1 
+#Horas previstas 0h30 
+#Valor previsto R$ 200,00 Agenda 
+ linha: Horário Situação 
+ linha: 08:00 Livre 
+ linha: 08:30 Maria Souza - Agendada 
+### 2) novo periodo 26/10 10:00-12:00 com duracao 60 min, R$ 200
+Horário de atendimento adicionado com sucesso.||[HTTP final 200 url http://localhost:8080/medico/agenda?data=2026-10-26]|
+painel de Paulo em 25/10 (depois):
+#Data 25/10/2026 
+#Consultas 1 
+#Horas previstas 0h30 
+#Valor previsto R$ 200,00 Agenda 
+ linha: Horário Situação 
+ linha: 08:00 Livre 
+tela Consultas de Paulo (25/10):
+ 25/10/2026 08:30 Maria Souza R$ 200,00 [link:/medico/consultas/23/cancelar]Cancelar 
+visao do paciente em 25/10 (depois):
+08:00 [botoes de horario: 1]
+visao do paciente em 14/10 (periodo 08:00-09:15; 08:30 ocupado por consulta do Paciente Teste):
+08:00 [botoes de horario: 1]
+painel de Paulo em 14/10:
+#Data 14/10/2026 
+#Consultas 1 
+#Horas previstas 0h30 
+#Valor previsto R$ 200,00 Agenda 
+ linha: Horário Situação 
+ linha: 08:00 Livre 

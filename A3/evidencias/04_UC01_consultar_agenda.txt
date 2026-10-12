@@ -1,0 +1,40 @@
+# Evidencias - UC01 Consultar agenda do medico. Hoje = 12/10/2026; amanha = 13/10/2026. Requisicoes enviadas com Accept-Language: pt-BR (como um navegador em portugues).
+
+### CT-UC01-01 GET /paciente/medicos
+<div><h1 class="h3 mb-0">Escolha um médico</h1></div>
+<h2 class="h5">Ana Lima</h2>
+<p class="text-muted">Cardiologista</p>
+<h2 class="h5">Bruno Melo</h2>
+<p class="text-muted">Dermatologista</p>
+<h2 class="h5">Carlos Reis</h2>
+<p class="text-muted">Pediatra</p>
+<h2 class="h5">Dr. Paulo Novo</h2>
+<p class="text-muted">Ortopedista</p>
+
+### CT-UC01-02 Ana Lima (id 1), 2026-10-13 (periodo 08:00-12:00, 30 min)
+08:00 08:30 09:00 09:30 10:00 10:30 11:00 11:30 [botoes de horario: 1]
+
+### CT-UC01-03 data passada 2026-10-11
+Não há horários livres para esta data.
+[botoes de horario: 0]
+### CT-UC01-03b hoje 2026-10-12 (sem periodo)
+Não há horários livres para esta data.
+[botoes de horario: 0]
+
+### CT-UC01-04 data sem periodo 2026-10-20
+Não há horários livres para esta data.
+[botoes de horario: 0]
+--- campo de data para escolher outra (HTML):
+<input class="form-control" id="data" name="data" type="date" value="2026-10-20" required>
+<div class="col-sm-2"><button class="btn btn-outline-primary" type="submit">Ver horários</button></div>
+
+### CT-UC01-05 Dr. Paulo Novo (id 4) sem agenda
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/medicos
+--- seguindo o redirect:
+<div><h1 class="h3 mb-0">Escolha um médico</h1></div>
+<div class="alert alert-danger">Este médico ainda não possui agenda cadastrada.</div>
+
+### CT-UC01 extra: medico inexistente id 999
+<div><h1 class="h3 mb-0">Escolha um médico</h1></div>
+<div class="alert alert-danger">Médico não encontrado.</div>

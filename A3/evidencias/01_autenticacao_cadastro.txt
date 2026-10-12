@@ -1,0 +1,110 @@
+# Evidencias - Cadastro (CT-AUT-01 a CT-AUT-06 e CT-AUT-13). A senha cifrada (CT-AUT-12) esta na evidencia 03. Executado em 12/10/2026 contra http://localhost:8080 (perfil dev). Banco recem-recriado.
+# Nota: esta evidencia foi coletada sem os cabecalhos de navegador (Accept-Language pt-BR; Accept text/html); o CT-AUT-06 foi reexecutado com eles (evidencia 18).
+
+### CT-AUT-01 cadastrar paciente valido: POST /cadastro nome='Maria Souza' email=maria.souza@teste.com senha=abcd tipoUsuario=PACIENTE
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login - Agendamento de Consultas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<main class="container py-5" style="max-width: 480px;">
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <h1 class="h3 text-center mb-4">Agendamento de Consultas</h1>
+
+            
+            
+            <div class="alert alert-success">Cadastro realizado. Entre com seu e-mail e senha.</div>
+
+            <form action="/login" method="post"><input type="hidden" name="_csrf" value="a89J8y4KySj6f_S5TqHf3HgO9P6Z5Gm7EUD252nP-GxMDkAUU_pxxUg6qhzXS8XceYzr604-2Zz6hlGWJSbOgwipyV8tPHZ3"/>
+                <div class="mb-3">
+                    <label class="form-label" for="username">E-mail</label>
+                    <input class="form-control" id="username" name="username" type="email" required autofocus>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="password">Senha</label>
+                    <input class="form-control" id="password" name="password" type="password" required>
+                </div>
+                <button class="btn btn-primary w-100" type="submit">Entrar</button>
+            </form>
+
+            <p class="text-center mt-3 mb-0">Ainda não possui cadastro? <a href="/cadastro">Cadastre-se</a>.</p>
+        </div>
+    </div>
+</main>
+</body>
+</html>
+
+[HTTP final 200 url http://localhost:8080/login]
+1
+--- HTML do alerta:
+            <div class="alert alert-success">Cadastro realizado. Entre com seu e-mail e senha.</div>
+--- login com a conta nova:
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/inicio
+
+### CT-AUT-02 medico com especialidade: nome='Dr. Paulo Novo' email=paulo.novo@teste.com senha=abcd tipoUsuario=MEDICO especialidade=Ortopedista
+            <div class="alert alert-success">Cadastro realizado. Entre com seu e-mail e senha.</div>
+[HTTP final 200 url http://localhost:8080/login]
+--- login do medico novo:
+HTTP/1.1 302 
+Location: http://localhost:8080/medico/painel
+--- lista de medicos do paciente (deve incluir Dr. Paulo Novo - Ortopedista):
+<h2 class="h5">Ana Lima</h2>
+<p class="text-muted">Cardiologista</p>
+<a class="btn btn-primary mt-auto" href="/paciente/agenda-medico?medicoId=1">Ver agenda</a>
+<h2 class="h5">Bruno Melo</h2>
+<p class="text-muted">Dermatologista</p>
+<a class="btn btn-primary mt-auto" href="/paciente/agenda-medico?medicoId=2">Ver agenda</a>
+<h2 class="h5">Carlos Reis</h2>
+<p class="text-muted">Pediatra</p>
+<a class="btn btn-primary mt-auto" href="/paciente/agenda-medico?medicoId=3">Ver agenda</a>
+<h2 class="h5">Dr. Paulo Novo</h2>
+<p class="text-muted">Ortopedista</p>
+<a class="btn btn-primary mt-auto" href="/paciente/agenda-medico?medicoId=4">Ver agenda</a>
+
+### CT-AUT-03 medico sem especialidade
+Criar cadastro
+Informe a especialidade do médico.
+Voltar para o login
+[HTTP final 200 url http://localhost:8080/cadastro]
+
+### CT-AUT-04a mesmo e-mail (paciente x paciente)
+Criar cadastro
+Já existe um usuário cadastrado com este e-mail.
+Voltar para o login
+[HTTP final 200 url http://localhost:8080/cadastro]
+### CT-AUT-04b e-mail de medico em cadastro de paciente
+Criar cadastro
+Já existe um usuário cadastrado com este e-mail.
+Voltar para o login
+[HTTP final 200 url http://localhost:8080/cadastro]
+### CT-AUT-04c e-mail de paciente em cadastro de medico
+Criar cadastro
+Já existe um usuário cadastrado com este e-mail.
+Voltar para o login
+[HTTP final 200 url http://localhost:8080/cadastro]
+### CT-AUT-13 (exploratorio) mesmo e-mail com maiusculas: MARIA.SOUZA@TESTE.COM
+Agendamento de Consultas
+Cadastro realizado. Entre com seu e-mail e senha.
+Ainda não possui cadastro? Cadastre-se.
+[HTTP final 200 url http://localhost:8080/login]
+
+### CT-AUT-05 senha com 3 caracteres
+Criar cadastro
+A senha deve ter pelo menos 4 caracteres.
+Voltar para o login
+[HTTP final 200 url http://localhost:8080/cadastro]
+
+### CT-AUT-06 e-mail em formato invalido (sem @)
+Criar cadastro
+must be a well-formed email address
+Voltar para o login
+[HTTP final 200 url http://localhost:8080/cadastro]
+--- login com o e-mail invalido (confirma que nao foi gravado):
+HTTP/1.1 302 
+Location: http://localhost:8080/login?error

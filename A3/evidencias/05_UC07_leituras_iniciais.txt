@@ -1,0 +1,39 @@
+# Evidencias - UC07 leituras iniciais (sem consultas no banco)
+
+### CT-UC07-01 painel sem informar data (GET /medico/painel) - Ana
+#Data 12/10/2026 
+#Consultas 0 
+#Horas previstas 0h00 
+#Valor previsto R$ 0,00 Agenda 
+<input class="form-control" id="data" name="data" type="date" value="2026-10-12" required>
+
+### CT-UC07-03 Ana, 13/10/2026, sem consultas
+#Data 13/10/2026 
+#Consultas 0 
+#Horas previstas 0h00 
+#Valor previsto R$ 0,00 Agenda 
+ linha: Horário Situação 
+ linha: 08:00 Livre 
+ linha: 08:30 Livre 
+ linha: 09:00 Livre 
+ linha: 09:30 Livre 
+ linha: 10:00 Livre 
+ linha: 10:30 Livre 
+ linha: 11:00 Livre 
+ linha: 11:30 Livre 
+
+### CT-UC07-04 Ana, 20/10/2026, sem periodo
+#Data 20/10/2026 
+#Consultas 0 
+#Horas previstas 0h00 
+#Valor previsto R$ 0,00 Agenda 
+ linha: Horário Situação 
+ linha: Não há período de atendimento cadastrado para esta data. 
+
+### CT-UC07-05 trocar a data: 13/10 e depois 20/10 (acima). Campo de data e botao Consultar:
+<input class="form-control" id="data" name="data" type="date" value="2026-10-12" required>
+<div class="col-sm-2"><button class="btn btn-primary" type="submit">Consultar</button></div>
+
+### CT-UC07-08a Consultas vazia (Carlos, GET /medico/consultas)
+ Data Horário Paciente Valor Ação 
+ Não há consultas agendadas. 

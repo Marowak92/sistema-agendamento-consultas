@@ -1,0 +1,85 @@
+# Evidencias - UC06 Manter agenda (parte 2): remocao, valor zero, consulta afetada, alterar, outro medico. Medico Dr. Paulo Novo (id 4)
+
+### CT-UC06-08 remover periodo sem consultas: 17/10 09:00-10:00
+Horário de atendimento adicionado com sucesso.||[HTTP final 200 url http://localhost:8080/medico/agenda?data=2026-10-17]|
+ 09:00 10:00 [id:7] Remover 
+visao do paciente antes da remocao:
+09:00 09:30 [botoes de horario: 1]
+removendo periodo id 7:
+Horário de atendimento removido.|[HTTP final 200 url http://localhost:8080/medico/agenda?data=2026-10-17]|
+periodos de 17/10 depois:
+ Nenhum período cadastrado nesta data. 
+visao do paciente depois da remocao:
+Não há horários livres para esta data.
+[botoes de horario: 0]
+
+### CT-UC06-09 fluxo 3b remover periodo que tem consulta agendada: 18/10 09:00-10:00; Maria Souza agenda 09:00
+Horário de atendimento adicionado com sucesso.||[HTTP final 200 url http://localhost:8080/medico/agenda?data=2026-10-18]|
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/medicos
+<div class="alert alert-success">Consulta agendada com sucesso.</div>
+Paulo remove o periodo id 8 (que contem a consulta):
+Horário de atendimento removido.|[HTTP final 200 url http://localhost:8080/medico/agenda?data=2026-10-18]|
+periodos de 18/10 depois:
+ Nenhum período cadastrado nesta data. 
+consulta de Maria continua em Minhas consultas?
+ 18/10/2026 09:00 Dr. Paulo Novo Ortopedista [link:/paciente/consultas/17/cancelar]Cancelar 
+Consultas do medico:
+ Data Horário Paciente Valor Ação 
+ 14/10/2026 08:30 Paciente Teste R$ 200,00 [link:/medico/consultas/16/cancelar]Cancelar 
+ 18/10/2026 09:00 Maria Souza R$ 200,00 [link:/medico/consultas/17/cancelar]Cancelar 
+Painel do medico em 18/10:
+#Data 18/10/2026 
+#Consultas 1 
+#Horas previstas 0h30 
+#Valor previsto R$ 200,00 Agenda 
+ linha: Horário Situação 
+ linha: Não há período de atendimento cadastrado para esta data. 
+
+### CT-UC06-07 valor 0 e CT-UC07-06: periodo 22/10 09:00-10:00 com valor 0,00; Maria agenda 09:00
+Horário de atendimento adicionado com sucesso.||[HTTP final 200 url http://localhost:8080/medico/agenda?data=2026-10-22]|
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/medicos
+<div class="alert alert-success">Consulta agendada com sucesso.</div>
+resumo da consulta ao paciente com valor 0:
+ Valor R$ 0,00 
+painel do medico em 22/10:
+#Data 22/10/2026 
+#Consultas 1 
+#Horas previstas 0h30 
+#Valor previsto R$ 0,00 Agenda 
+ linha: Horário Situação 
+ linha: 09:00 Maria Souza - Agendada 
+ linha: 09:30 Livre 
+tela Consultas:
+ Data Horário Paciente Valor Ação 
+ 14/10/2026 08:30 Paciente Teste R$ 200,00 [link:/medico/consultas/16/cancelar]Cancelar 
+ 18/10/2026 09:00 Maria Souza R$ 200,00 [link:/medico/consultas/17/cancelar]Cancelar 
+ 22/10/2026 09:00 Maria Souza R$ 0,00 [link:/medico/consultas/18/cancelar]Cancelar 
+
+### CT-UC08-03 valores diferentes entre agendamentos: 23/10 08:00-09:00 a R$ 100 (agenda 1) e 13:00-14:00 a R$ 300 (agenda 2)
+Horário de atendimento adicionado com sucesso.||[HTTP final 200 url http://localhost:8080/medico/agenda?data=2026-10-23]|
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/medicos
+<div class="alert alert-success">Consulta agendada com sucesso.</div>
+Horário de atendimento adicionado com sucesso.||[HTTP final 200 url http://localhost:8080/medico/agenda?data=2026-10-23]|
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/medicos
+<div class="alert alert-success">Consulta agendada com sucesso.</div>
+painel do medico em 23/10 (esperado: 2 consultas, 1h00, 100 + 300 = R$ 400,00):
+#Data 23/10/2026 
+#Consultas 2 
+#Horas previstas 1h00 
+#Valor previsto R$ 400,00 Agenda 
+ linha: Horário Situação 
+ linha: 08:00 Paciente Teste - Agendada 
+ linha: 08:30 Livre 
+ linha: 13:00 Paciente Teste - Agendada 
+ linha: 13:30 Livre 
+tela Consultas (valor gravado em cada consulta):
+ Data Horário Paciente Valor Ação 
+ 14/10/2026 08:30 Paciente Teste R$ 200,00 [link:/medico/consultas/16/cancelar]Cancelar 
+ 18/10/2026 09:00 Maria Souza R$ 200,00 [link:/medico/consultas/17/cancelar]Cancelar 
+ 22/10/2026 09:00 Maria Souza R$ 0,00 [link:/medico/consultas/18/cancelar]Cancelar 
+ 23/10/2026 08:00 Paciente Teste R$ 100,00 [link:/medico/consultas/19/cancelar]Cancelar 
+ 23/10/2026 13:00 Paciente Teste R$ 300,00 [link:/medico/consultas/20/cancelar]Cancelar 

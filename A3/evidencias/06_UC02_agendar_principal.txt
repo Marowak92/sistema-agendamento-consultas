@@ -1,0 +1,25 @@
+# Evidencias - UC02 Agendar consulta (fluxo principal, voltar, 2a, pos-condicoes). Paciente Teste = paciente@teste.com; Maria Souza = maria.souza@teste.com
+
+### CT-UC02-01 fluxo principal: Paciente Teste agenda Ana Lima, 13/10/2026 08:00
+1) GET /paciente/medicos, 2) agenda-medico?medicoId=1&data=2026-10-13:
+08:00 08:30 09:00 09:30 10:00 10:30 11:00 11:30 [botoes de horario: 1]
+3) GET /paciente/resumo-consulta?medicoId=1&data=2026-10-13&horario=08:00 (tela Resumo da consulta):
+ Confirmar consulta Resumo da consulta 
+ Médico Ana Lima 
+ Especialidade Cardiologista 
+ Data 13/10/2026 
+ Horário 08:00 
+ Duração 30 minutos 
+ Valor R$ 150,00 Confirmar agendamento Voltar 
+--- botoes da tela:
+<button class="btn btn-primary" type="submit">Confirmar agendamento</button>
+<a class="btn btn-outline-secondary" href="/paciente/agenda-medico?medicoId=1&amp;data=2026-10-13">Voltar</a>
+5) POST /paciente/consultas (Confirmar agendamento) -> status e Location:
+HTTP/1.1 302 
+Location: http://localhost:8080/paciente/medicos
+6) seguindo o redirect (mensagem exibida):
+<div><h1 class="h3 mb-0">Escolha um médico</h1></div>
+<div class="alert alert-success">Consulta agendada com sucesso.</div>
+7) Minhas consultas:
+ Data Horário Médico Especialidade Ação 
+ 13/10/2026 08:00 Ana Lima Cardiologista [link:/paciente/consultas/1/cancelar]Cancelar 
