@@ -79,14 +79,6 @@ git clone https://github.com/Marowak92/sistema-agendamento-consultas.git
 cd sistema-agendamento-consultas
 ```
 
-Para criar a branch do exercício a partir da `main`, em uma cópia que ainda não tenha `iteracao2`:
-
-```shell
-git switch main
-git switch -c iteracao2
-```
-
-Se a branch já existir, use apenas `git switch iteracao2`. Execute os próximos comandos na raiz do repositório, onde está o arquivo `pom.xml`.
 
 ### 3. Iniciar no perfil de desenvolvimento
 
@@ -153,5 +145,3 @@ O comando `mvn clean package` compila e empacota a aplicação e executa os test
 | A aplicação pede credenciais de PostgreSQL | Confira se há um perfil `prod` configurado no terminal ou na IDE. Remova essa configuração e inicie explicitamente com `dev`. |
 | Falha ao baixar dependências | Confira a conexão com a internet e, se estiver em uma rede institucional, a configuração de proxy do Maven. |
 | Não aparecem horários de demonstração | Selecione a data de amanhã em relação à inicialização do servidor ou entre como médico e cadastre novos horários. |
-| Git informa `Filename too long` no Windows | Use uma pasta com caminho mais curto ou clone com `git -c core.longpaths=true clone -c core.longpaths=true https://github.com/Marowak92/sistema-agendamento-consultas.git`. |
-
