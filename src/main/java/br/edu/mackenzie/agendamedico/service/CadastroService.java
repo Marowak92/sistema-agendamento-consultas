@@ -25,7 +25,9 @@ public class CadastroService {
     }
 
     public void cadastrar(CadastroDTO dados) {
-        if (pacienteRepository.existsByEmail(dados.getEmail()) || medicoRepository.existsByEmail(dados.getEmail())) {
+        // o e-mail e gravado sempre em minusculas, para que a mesma conta nao exista com outra grafia
+        dados.setEmail(dados.getEmail().trim().toLowerCase(java.util.Locale.ROOT));
+        if (pacienteRepository.existsByEmailIgnoreCase(dados.getEmail()) || medicoRepository.existsByEmailIgnoreCase(dados.getEmail())) {
             throw new IllegalArgumentException("Já existe um usuário cadastrado com este e-mail.");
         }
 

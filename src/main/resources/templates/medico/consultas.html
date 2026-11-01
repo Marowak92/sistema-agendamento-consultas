@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Consultas da agenda</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/app.css}" rel="stylesheet">
 </head>
 <body class="bg-light">
 <main class="container py-5" style="max-width: 950px;">
@@ -21,15 +22,15 @@
 
     <div class="card shadow-sm">
         <div class="card-body table-responsive">
-            <table class="table align-middle mb-0">
+            <table class="table align-middle mb-0 tabela-responsiva">
                 <thead><tr><th>Data</th><th>Horário</th><th>Paciente</th><th>Valor</th><th>Ação</th></tr></thead>
                 <tbody>
                 <tr th:each="consulta : ${consultas}">
-                    <td th:text="${#temporals.format(consulta.data, 'dd/MM/yyyy')}"></td>
-                    <td th:text="${#temporals.format(consulta.horario, 'HH:mm')}"></td>
-                    <td th:text="${consulta.paciente.nome}"></td>
-                    <td>R$ <span th:text="${#numbers.formatDecimal(consulta.valor, 1, 2)}"></span></td>
-                    <td><a class="btn btn-sm btn-outline-danger" th:href="@{/medico/consultas/{id}/cancelar(id=${consulta.id})}">Cancelar</a></td>
+                    <td data-label="Data" th:text="${#temporals.format(consulta.data, 'dd/MM/yyyy')}"></td>
+                    <td data-label="Horário" th:text="${#temporals.format(consulta.horario, 'HH:mm')}"></td>
+                    <td data-label="Paciente" th:text="${consulta.paciente.nome}"></td>
+                    <td data-label="Valor"><span th:if="${consulta.valor.signum() > 0}">R$ <span th:text="${#numbers.formatDecimal(consulta.valor, 1, 2)}"></span></span><span class="text-muted" th:unless="${consulta.valor.signum() > 0}">Não informado</span></td>
+                    <td data-label="Ação"><a class="btn btn-sm btn-outline-danger" th:href="@{/medico/consultas/{id}/cancelar(id=${consulta.id})}">Cancelar</a></td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(consultas)}"><td colspan="5" class="text-muted">Não há consultas agendadas.</td></tr>
                 </tbody>

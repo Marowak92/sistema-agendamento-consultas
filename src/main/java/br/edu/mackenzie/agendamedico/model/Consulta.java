@@ -71,6 +71,21 @@ public class Consulta {
     @Column(name = "chave_reserva", length = 10)
     private String chaveReserva;
 
+    @Column(name = "lembrete_enviado")
+    private Boolean lembreteEnviado;
+
+    public boolean isLembreteEnviado() {
+        return Boolean.TRUE.equals(lembreteEnviado);
+    }
+
+    public void setLembreteEnviado(Boolean lembreteEnviado) {
+        this.lembreteEnviado = lembreteEnviado;
+    }
+
+    public java.time.LocalDateTime inicio() {
+        return java.time.LocalDateTime.of(data, horario);
+    }
+
     @PrePersist
     @PreUpdate
     private void atualizarChaveReserva() {

@@ -24,9 +24,20 @@ public class PainelMedicoController {
 
     @GetMapping
     public String exibirPainel(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data,
+                               @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicial,
+                               @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFinal,
                                Authentication authentication, Model model) {
         LocalDate dataSelecionada = data == null ? LocalDate.now() : data;
         model.addAttribute("painel", painelMedicoService.montarPainel(authentication.getName(), dataSelecionada));
+        model.addAttribute("dataInicial", dataInicial);
+        model.addAttribute("dataFinal", dataFinal);
+        if (dataInicial != null && dataFinal != null) {
+            try {
+                model.addAttribute("previsao", painelMedicoService.preverPeriodo(authentication.getName(), dataInicial, dataFinal));
+            } catch (IllegalArgumentException exception) {
+                model.addAttribute("erroPrevisao", exception.getMessage());
+            }
+        }
         return "medico/painel";
     }
 }

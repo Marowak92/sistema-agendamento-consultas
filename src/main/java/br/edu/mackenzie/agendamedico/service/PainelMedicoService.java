@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import br.edu.mackenzie.agendamedico.dto.PainelDiarioDTO;
+import br.edu.mackenzie.agendamedico.dto.PrevisaoPeriodoDTO;
 import br.edu.mackenzie.agendamedico.model.Agenda;
 import br.edu.mackenzie.agendamedico.model.Consulta;
 import br.edu.mackenzie.agendamedico.model.HorarioAtendimento;
@@ -38,8 +39,7 @@ public class PainelMedicoService {
     }
 
     public PainelDiarioDTO montarPainel(String emailMedico, LocalDate data) {
-        Medico medico = medicoRepository.findByEmail(emailMedico)
-                .orElseThrow(() -> new IllegalArgumentException("Médico não encontrado."));
+        Medico medico = obterMedico(emailMedico);
         List<Consulta> consultas = consultaRepository
                 .findByMedicoIdAndDataAndStatus(medico.getId(), data, StatusConsulta.AGENDADA);
 
@@ -58,14 +58,33 @@ public class PainelMedicoService {
                 .collect(Collectors.toMap(Consulta::getHorario, Function.identity()));
         List<HorarioAtendimento> periodos = horarioRepository
                 .findByAgendaMedicoIdAndDataOrderByHoraInicioAsc(medico.getId(), data);
-
         for (HorarioAtendimento periodo : periodos) {
-            LocalTime horario = periodo.getHoraInicio();
-            while (!horario.plusMinutes(agenda.getDuracaoConsulta()).isAfter(periodo.getHoraFim())) {
+            for (LocalTime horario : periodo.horarios()) {
                 painel.getAgenda().add(new PainelDiarioDTO.LinhaAgenda(horario, consultasPorHorario.get(horario)));
-                horario = horario.plusMinutes(agenda.getDuracaoConsulta());
             }
         }
         return painel;
+    }
+
+    public PrevisaoPeriodoDTO preverPeriodo(String emailMedico, LocalDate dataInicial, LocalDate dataFinal) {
+        if (dataFinal.isBefore(dataInicial)) {
+            throw new IllegalArgumentException("A data final não pode ser anterior à data inicial.");
+        }
+        Medico medico = obterMedico(emailMedico);
+        List<Consulta> consultas = consultaRepository.findByMedicoIdAndStatusAndDataBetween(medico.getId(),
+                StatusConsulta.AGENDADA, dataInicial, dataFinal);
+
+        PrevisaoPeriodoDTO previsao = new PrevisaoPeriodoDTO();
+        previsao.setDataInicial(dataInicial);
+        previsao.setDataFinal(dataFinal);
+        previsao.setTotalConsultas(consultas.size());
+        previsao.setMinutosPrevistos(consultas.stream().mapToInt(Consulta::getDuracao).sum());
+        previsao.setValorPrevisto(consultas.stream().map(Consulta::getValor).reduce(BigDecimal.ZERO, BigDecimal::add));
+        return previsao;
+    }
+
+    private Medico obterMedico(String emailMedico) {
+        return medicoRepository.findByEmail(emailMedico)
+                .orElseThrow(() -> new IllegalArgumentException("Médico não encontrado."));
     }
 }

@@ -17,20 +17,22 @@ O sistema está disponível em produção em:
 ### Para pacientes
 
 - Criar uma conta de paciente e entrar no sistema.
-- Consultar os médicos cadastrados e suas especialidades.
-- Escolher uma data e visualizar os horários disponíveis de cada médico.
-- Conferir o resumo antes de confirmar o agendamento.
-- Consultar a lista de suas consultas.
-- Cancelar uma consulta própria com confirmação.
+- Consultar os médicos cadastrados e buscar por nome ou especialidade.
+- Escolher uma data e visualizar os horários disponíveis de cada médico. Horários do dia que já passaram não são oferecidos.
+- Conferir o resumo antes de confirmar o agendamento. O sistema não aceita duas consultas com o mesmo médico no mesmo dia.
+- Consultar a lista de suas consultas e adicionar cada uma à agenda pessoal, por um arquivo `.ics` (padrão iCalendar) aceito pelo Google Agenda, Outlook e agendas de celular.
+- Receber por e-mail o lembrete da consulta 48 horas antes. Se a consulta for marcada com menos de 48 horas, o lembrete sai logo após o agendamento.
+- Cancelar uma consulta própria com confirmação, com pelo menos 24 horas de antecedência. O médico recebe um aviso por e-mail.
 
 ### Para médicos
 
 - Criar uma conta de médico, informando a especialidade.
-- Definir horários de atendimento para datas específicas.
-- Remover horários de atendimento que não estejam mais disponíveis.
+- Definir períodos de atendimento para datas específicas, cada um com a sua duração de consulta e o seu valor.
+- Alterar ou remover períodos. Períodos com consultas agendadas que deixariam de caber não são alterados nem removidos até que essas consultas sejam canceladas.
 - Consultar as consultas vinculadas ao seu perfil.
-- Cancelar uma consulta sob sua responsabilidade, com confirmação.
-- Acessar o painel diário para visualizar agenda, horários livres e ocupados, total de consultas, horas previstas e valor previsto em uma data selecionada.
+- Cancelar uma consulta sob sua responsabilidade, com confirmação, sem prazo mínimo. O paciente recebe um aviso por e-mail.
+- Acessar o painel diário para visualizar agenda, horários livres e ocupados, total de consultas, horas previstas e valor previsto em uma data selecionada. Quando o valor das consultas não foi informado, o painel mostra "Não informado".
+- Calcular a previsão de consultas, horas e valor entre duas datas.
 
 ## Tecnologias em produção
 
@@ -125,6 +127,8 @@ As contas abaixo são criadas automaticamente somente no perfil `dev`:
 
 Também é possível criar novas contas pela opção **Cadastre-se** na tela de login.
 
+No perfil `dev` não há servidor de e-mail. Os e-mails de lembrete e de aviso de cancelamento ficam registrados na caixa de saída, em [http://localhost:8080/dev/caixa-de-saida](http://localhost:8080/dev/caixa-de-saida), que pode ser aberta por qualquer usuário logado. A rotina de lembretes roda a cada minuto.
+
 Para inspecionar o banco local, acesse [http://localhost:8080/h2-console](http://localhost:8080/h2-console) enquanto a aplicação estiver em execução e use:
 
 | Campo | Valor |
@@ -133,6 +137,18 @@ Para inspecionar o banco local, acesse [http://localhost:8080/h2-console](http:/
 | JDBC URL | `jdbc:h2:mem:agendamedico;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE` |
 | User Name | `sa` |
 | Password | Deixe em branco. |
+
+### Envio de e-mails em produção
+
+Em produção, os e-mails são enviados por um servidor SMTP informado nas variáveis de ambiente abaixo. Sem elas, o sistema continua funcionando e só registra os e-mails no banco, na tabela `emails_enviados`.
+
+| Variável | Exemplo |
+| --- | --- |
+| `SPRING_MAIL_HOST` | `smtp.gmail.com` |
+| `SPRING_MAIL_PORT` | `587` |
+| `SPRING_MAIL_USERNAME` | conta de e-mail usada para enviar |
+| `SPRING_MAIL_PASSWORD` | senha de aplicativo da conta |
+| `AGENDA_EMAIL_REMETENTE` | endereço que aparece como remetente |
 
 ### 5. Encerrar ou gerar um executável
 

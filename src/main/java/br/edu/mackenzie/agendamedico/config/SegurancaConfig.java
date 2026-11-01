@@ -14,7 +14,7 @@ public class SegurancaConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login", "/cadastro", "/h2-console/**").permitAll()
+                        .requestMatchers("/login", "/cadastro", "/h2-console/**", "/css/**", "/acesso-negado").permitAll()
                         .requestMatchers("/paciente/**").hasRole("PACIENTE")
                         .requestMatchers("/medico/**").hasRole("MEDICO")
                         .anyRequest().authenticated()
@@ -29,6 +29,7 @@ public class SegurancaConfig {
                         .permitAll()
                 )
                 .logout(logout -> logout.logoutSuccessUrl("/login?logout"))
+                .exceptionHandling(erro -> erro.accessDeniedPage("/acesso-negado"))
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()));
 

@@ -3,6 +3,9 @@ package br.edu.mackenzie.agendamedico.controller;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,8 +33,9 @@ public class ConsultaController {
     }
 
     @GetMapping("/medicos")
-    public String listarMedicos(Model model) {
-        model.addAttribute("medicos", consultaService.listarMedicos());
+    public String listarMedicos(@RequestParam(required = false) String busca, Model model) {
+        model.addAttribute("busca", busca);
+        model.addAttribute("medicos", consultaService.buscarMedicos(busca));
         return "paciente/medicos";
     }
 
@@ -52,10 +56,11 @@ public class ConsultaController {
 
     @GetMapping("/resumo-consulta")
     public String exibirResumo(@RequestParam Long medicoId, @RequestParam LocalDate data,
-                               @RequestParam LocalTime horario, Model model, RedirectAttributes redirectAttributes) {
+                               @RequestParam LocalTime horario, Authentication authentication, Model model,
+                               RedirectAttributes redirectAttributes) {
         AgendamentoDTO agendamento = criarAgendamento(medicoId, data, horario);
         try {
-            model.addAttribute("consulta", consultaService.prepararResumo(agendamento));
+            model.addAttribute("consulta", consultaService.prepararResumo(authentication.getName(), agendamento));
             model.addAttribute("agendamento", agendamento);
             return "paciente/resumo-consulta";
         } catch (IllegalArgumentException exception) {
@@ -93,7 +98,7 @@ public class ConsultaController {
     public String confirmarCancelamentoPaciente(@PathVariable Long id, Authentication authentication,
                                                 Model model, RedirectAttributes redirectAttributes) {
         try {
-            model.addAttribute("consulta", consultaService.obterConsultaPaciente(authentication.getName(), id));
+            model.addAttribute("consulta", consultaService.obterConsultaParaCancelamentoPaciente(authentication.getName(), id));
             model.addAttribute("acao", "/paciente/consultas/" + id + "/cancelar");
             model.addAttribute("voltar", "/paciente/minhas-consultas");
             return "confirmar-cancelamento";
@@ -113,6 +118,21 @@ public class ConsultaController {
             redirectAttributes.addFlashAttribute("erro", exception.getMessage());
         }
         return "redirect:/paciente/minhas-consultas";
+    }
+
+    @GetMapping("/consultas/{id}/calendario.ics")
+    public Object exportarCalendario(@PathVariable Long id, Authentication authentication,
+                                     RedirectAttributes redirectAttributes) {
+        try {
+            String calendario = consultaService.gerarCalendario(authentication.getName(), id);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"consulta-" + id + ".ics\"")
+                    .contentType(MediaType.parseMediaType("text/calendar; charset=UTF-8"))
+                    .body(calendario);
+        } catch (IllegalArgumentException exception) {
+            redirectAttributes.addFlashAttribute("erro", exception.getMessage());
+            return "redirect:/paciente/minhas-consultas";
+        }
     }
 
     private AgendamentoDTO criarAgendamento(Long medicoId, LocalDate data, LocalTime horario) {

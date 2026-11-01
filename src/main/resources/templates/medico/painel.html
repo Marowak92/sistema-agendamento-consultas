@@ -36,7 +36,32 @@
         <div class="col-sm-6 col-lg-3"><div class="card shadow-sm h-100"><div class="card-body"><div class="text-muted small">Data</div><strong th:text="${#temporals.format(painel.data, 'dd/MM/yyyy')}"></strong></div></div></div>
         <div class="col-sm-6 col-lg-3"><div class="card shadow-sm h-100"><div class="card-body"><div class="text-muted small">Consultas</div><strong th:text="${painel.totalConsultas}"></strong></div></div></div>
         <div class="col-sm-6 col-lg-3"><div class="card shadow-sm h-100"><div class="card-body"><div class="text-muted small">Horas previstas</div><strong th:text="${painel.horasPrevistasFormatadas}"></strong></div></div></div>
-        <div class="col-sm-6 col-lg-3"><div class="card shadow-sm h-100"><div class="card-body"><div class="text-muted small">Valor previsto</div><strong>R$ <span th:text="${#numbers.formatDecimal(painel.valorPrevisto, 1, 2)}"></span></strong></div></div></div>
+        <div class="col-sm-6 col-lg-3"><div class="card shadow-sm h-100"><div class="card-body"><div class="text-muted small">Valor previsto</div><strong th:if="${painel.valorInformado}">R$ <span th:text="${#numbers.formatDecimal(painel.valorPrevisto, 1, 2)}"></span></strong><strong class="text-muted" th:unless="${painel.valorInformado}">Não informado</strong></div></div></div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h2 class="h5 mb-3">Previsão por período</h2>
+            <form class="row g-2 align-items-end" method="get" th:action="@{/medico/painel}">
+                <input name="data" type="hidden" th:value="${painel.data}">
+                <div class="col-sm-4">
+                    <label class="form-label" for="dataInicial">Data inicial</label>
+                    <input class="form-control" id="dataInicial" name="dataInicial" type="date" th:value="${dataInicial}" required>
+                </div>
+                <div class="col-sm-4">
+                    <label class="form-label" for="dataFinal">Data final</label>
+                    <input class="form-control" id="dataFinal" name="dataFinal" type="date" th:value="${dataFinal}" required>
+                </div>
+                <div class="col-sm-4"><button class="btn btn-primary" type="submit">Calcular previsão</button></div>
+            </form>
+            <div class="alert alert-danger mt-3 mb-0" th:if="${erroPrevisao}" th:text="${erroPrevisao}"></div>
+            <div class="row g-3 mt-1" th:if="${previsao}">
+                <div class="col-sm-6 col-lg-3"><div class="text-muted small">Período</div><strong th:text="${#temporals.format(previsao.dataInicial, 'dd/MM/yyyy')} + ' a ' + ${#temporals.format(previsao.dataFinal, 'dd/MM/yyyy')}"></strong></div>
+                <div class="col-sm-6 col-lg-3"><div class="text-muted small">Consultas no período</div><strong th:text="${previsao.totalConsultas}"></strong></div>
+                <div class="col-sm-6 col-lg-3"><div class="text-muted small">Horas previstas no período</div><strong th:text="${previsao.horasPrevistasFormatadas}"></strong></div>
+                <div class="col-sm-6 col-lg-3"><div class="text-muted small">Valor previsto no período</div><strong th:if="${previsao.valorInformado}">R$ <span th:text="${#numbers.formatDecimal(previsao.valorPrevisto, 1, 2)}"></span></strong><strong class="text-muted" th:unless="${previsao.valorInformado}">Não informado</strong></div>
+            </div>
+        </div>
     </div>
 
     <div class="card shadow-sm">

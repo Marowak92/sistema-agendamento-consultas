@@ -27,6 +27,11 @@ public class PainelDiarioDTO {
     public List<LinhaAgenda> getAgenda() { return agenda; }
     public void setAgenda(List<LinhaAgenda> agenda) { this.agenda = agenda; }
 
+    /** UC07, fluxo 4a: com consultas de valor zero o valor nao foi informado e fica fora do painel. */
+    public boolean isValorInformado() {
+        return totalConsultas == 0 || valorPrevisto.signum() > 0;
+    }
+
     public String getHorasPrevistasFormatadas() {
         return minutosPrevistos / 60 + "h" + String.format("%02d", minutosPrevistos % 60);
     }
