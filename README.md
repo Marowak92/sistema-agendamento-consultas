@@ -70,7 +70,7 @@ mvn -version
 
 Os comandos `java`, `javac` e `mvn -version` devem indicar o uso do Java 21. A primeira execução precisa de internet para o Maven baixar as dependências. As páginas também usam estilos do Bootstrap carregados pela internet.
 
-### 2. Baixar o projeto e selecionar a branch
+### 2. Baixar o projeto e selecionar a versão
 
 No terminal, entre na pasta em que deseja salvar o projeto e execute:
 
@@ -79,6 +79,18 @@ git clone https://github.com/Marowak92/sistema-agendamento-consultas.git
 cd sistema-agendamento-consultas
 ```
 
+O clone já abre a branch `main`, com a versão mais recente. Para executar exatamente a versão entregue em uma iteração, selecione a tag correspondente:
+
+```shell
+git checkout v2
+```
+
+| Tag | Versão |
+| --- | --- |
+| `v1` | Entrega da primeira iteração da construção. |
+| `v2` | Entrega da segunda iteração da construção. |
+
+Ao selecionar uma tag, o Git informa que o repositório está em modo *detached HEAD*. Isso é esperado, pois a tag aponta para uma versão fixa. Para voltar à versão mais recente, execute `git checkout main`.
 
 ### 3. Iniciar no perfil de desenvolvimento
 
