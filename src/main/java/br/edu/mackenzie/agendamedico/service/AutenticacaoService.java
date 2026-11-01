@@ -22,12 +22,12 @@ public class AutenticacaoService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return pacienteRepository.findByEmail(email)
+        return pacienteRepository.findByEmailIgnoreCase(email.trim())
                 .<UserDetails>map(paciente -> User.withUsername(paciente.getEmail())
                         .password(paciente.getSenha())
                         .roles("PACIENTE")
                         .build())
-                .or(() -> medicoRepository.findByEmail(email)
+                .or(() -> medicoRepository.findByEmailIgnoreCase(email.trim())
                         .map(medico -> User.withUsername(medico.getEmail())
                                 .password(medico.getSenha())
                                 .roles("MEDICO")

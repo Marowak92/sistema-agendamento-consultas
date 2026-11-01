@@ -1,0 +1,38 @@
+/* Em telas estreitas, cada linha das tabelas vira um bloco com o nome da coluna ao lado do valor,
+   para que nenhuma coluna nem botao fique fora da tela (ONF01). */
+@media (max-width: 576px) {
+    table.tabela-responsiva thead {
+        display: none;
+    }
+
+    table.tabela-responsiva tr {
+        display: block;
+        border-bottom: 1px solid #dee2e6;
+        padding: .5rem 0;
+    }
+
+    table.tabela-responsiva td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        border: 0;
+        padding: .25rem 0;
+        text-align: right;
+    }
+
+    table.tabela-responsiva td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        text-align: left;
+    }
+
+    table.tabela-responsiva td[colspan] {
+        display: block;
+        text-align: left;
+    }
+
+    table.tabela-responsiva td[colspan]::before {
+        content: none;
+    }
+}

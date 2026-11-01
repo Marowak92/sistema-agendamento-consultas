@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Caixa de saída de e-mails</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/app.css}" rel="stylesheet">
+</head>
+<body class="bg-light">
+<main class="container py-5" style="max-width: 1000px;">
+    <h1 class="h3">Caixa de saída de e-mails</h1>
+    <p class="text-muted">Ambiente de desenvolvimento. Os e-mails gerados pelo sistema ficam registrados aqui, porque não há
+        servidor de e-mail configurado.</p>
+    <div class="card shadow-sm">
+        <div class="card-body table-responsive">
+            <table class="table align-middle mb-0 tabela-responsiva">
+                <thead><tr><th>Data e hora</th><th>Tipo</th><th>Para</th><th>Assunto</th><th>Mensagem</th></tr></thead>
+                <tbody>
+                <tr th:each="email : ${emails}">
+                    <td data-label="Data e hora" th:text="${#temporals.format(email.criadoEm, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                    <td data-label="Tipo" th:text="${email.tipo}"></td>
+                    <td data-label="Para" th:text="${email.destinatario}"></td>
+                    <td data-label="Assunto" th:text="${email.assunto}"></td>
+                    <td data-label="Mensagem" style="white-space: pre-line" th:text="${email.corpo}"></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(emails)}"><td colspan="5" class="text-muted">Nenhum e-mail gerado.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+</body>
+</html>

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,6 +55,37 @@ public class AgendaController {
         }
 
         redirectAttributes.addFlashAttribute("sucesso", "Horário de atendimento adicionado com sucesso.");
+        return "redirect:/medico/agenda?data=" + horario.getData();
+    }
+
+    @GetMapping("/{id}/editar")
+    public String editarHorario(@PathVariable Long id, Authentication authentication, Model model,
+                                RedirectAttributes redirectAttributes) {
+        try {
+            model.addAttribute("horario", agendaService.dadosDoHorario(agendaService.obterHorarioDoMedico(authentication.getName(), id)));
+            model.addAttribute("horarioId", id);
+            return "medico/editar-periodo";
+        } catch (IllegalArgumentException exception) {
+            redirectAttributes.addFlashAttribute("erro", exception.getMessage());
+            return "redirect:/medico/agenda";
+        }
+    }
+
+    @PostMapping("/{id}/editar")
+    public String alterarHorario(@PathVariable Long id, @Valid @ModelAttribute("horario") HorarioAtendimentoDTO horario,
+                                 BindingResult resultado, Authentication authentication, Model model,
+                                 RedirectAttributes redirectAttributes) {
+        model.addAttribute("horarioId", id);
+        if (resultado.hasErrors()) {
+            return "medico/editar-periodo";
+        }
+        try {
+            agendaService.alterarHorario(authentication.getName(), id, horario);
+        } catch (IllegalArgumentException exception) {
+            resultado.reject("horario", exception.getMessage());
+            return "medico/editar-periodo";
+        }
+        redirectAttributes.addFlashAttribute("sucesso", "Período de atendimento alterado com sucesso.");
         return "redirect:/medico/agenda?data=" + horario.getData();
     }
 

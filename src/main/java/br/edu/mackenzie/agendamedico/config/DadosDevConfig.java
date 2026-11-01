@@ -69,6 +69,8 @@ public class DadosDevConfig {
         horario.setData(LocalDate.now().plusDays(1));
         horario.setHoraInicio(LocalTime.of(8, 0));
         horario.setHoraFim(LocalTime.of(12, 0));
+        horario.setDuracaoConsulta(30);
+        horario.setValorConsulta(new BigDecimal("150.00"));
         agenda.getHorariosAtendimento().add(horario);
 
         repository.save(agenda);
